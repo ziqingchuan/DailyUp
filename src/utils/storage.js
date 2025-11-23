@@ -100,7 +100,7 @@ export const exportToMarkdown = (reports) => {
   const url = URL.createObjectURL(dataBlob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `WorkFlow_报告_${new Date().toLocaleDateString()}.md`
+  link.download = `DailyUp_报告_${new Date().toLocaleDateString()}.md`
   link.click()
   URL.revokeObjectURL(url)
 }
