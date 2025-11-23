@@ -105,32 +105,35 @@ export const exportToMarkdown = (reports) => {
   URL.revokeObjectURL(url)
 }
 
-export const importFromJSON = (file, callback) => {
+export const importFromJSON = async (file, callback) => {
   const reader = new FileReader()
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     try {
       const importedData = JSON.parse(e.target.result)
       if (Array.isArray(importedData)) {
-        const existingReports = getReports()
-        const existingIds = new Set(existingReports.map(r => r.id))
-        
-        const newReports = importedData.filter(report => {
-          return report.id && report.title && report.content && !existingIds.has(report.id)
+        const validReports = importedData.filter(report => {
+          return report.title && report.content
         })
         
-        if (newReports.length > 0) {
-          const allReports = [...newReports, ...existingReports]
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(allReports))
-          callback(newReports)
-          alert(`成功导入 ${newReports.length} 条报告！`)
+        if (validReports.length > 0) {
+          // 移除 id 字段，让 Supabase 生成新的 UUID
+          const reportsToImport = validReports.map(({ id, created_at, updated_at, ...report }) => report)
+          
+          // 导入到 Supabase
+          const { importReports } = await import('../services/reportService')
+          await importReports(reportsToImport)
+          
+          callback(reportsToImport)
+          alert(`成功导入 ${reportsToImport.length} 条报告！`)
         } else {
-          alert('没有新的报告可导入，或报告已存在。')
+          alert('没有有效的报告可导入。')
         }
       } else {
         alert('文件格式错误，请选择有效的 JSON 文件。')
       }
     } catch (error) {
-      alert('文件解析失败，请确保文件格式正确。')
+      console.error('导入失败:', error)
+      alert('文件解析或导入失败，请确保文件格式正确。')
     }
   }
   reader.readAsText(file)
