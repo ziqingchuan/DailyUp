@@ -168,17 +168,6 @@ function ReportList({ reports, onEdit, onDelete, onViewCard, onImport }) {
                 </div>
                 <h3>{report.title}</h3>
                 <p className="report-preview">{report.content.substring(0, 100)}...</p>
-                {report.mood && (
-                  <div className="mood-badge">
-                    <span className="mood-emoji-small">
-                      {report.mood === 'excellent' && '😄'}
-                      {report.mood === 'good' && '😊'}
-                      {report.mood === 'normal' && '😐'}
-                      {report.mood === 'bad' && '😔'}
-                      {report.mood === 'terrible' && '😢'}
-                    </span>
-                  </div>
-                )}
                 {report.achievements && report.achievements.length > 0 && (
                   <div className="achievements-preview">
                     <strong>收获：</strong>
