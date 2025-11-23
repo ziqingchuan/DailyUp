@@ -150,7 +150,7 @@ function ReportList({ reports, onEdit, onDelete, onViewCard, onImport }) {
         ) : (
           <div className="reports-grid">
             {filteredReports.map(report => (
-              <div key={report.id} onClick={() => onViewCard(report)} className={`report-item ${isExportMode ? 'export-mode' : ''} ${selectedReports.has(report.id) ? 'selected' : ''}`}>
+              <div key={report.id} className={`report-item ${isExportMode ? 'export-mode' : ''} ${selectedReports.has(report.id) ? 'selected' : ''}`}>
                 {isExportMode && (
                   <div className="report-checkbox" onClick={() => handleToggleSelect(report.id)}>
                     <input 
