@@ -164,7 +164,7 @@ function ReportList({ reports, onEdit, onDelete, onViewCard, onImport }) {
                   <span className={`report-type ${report.type}`}>
                     {report.type === 'daily' ? <><CalendarIcon size={14} /> 日报</> : <><ChartIcon size={14} /> 周报</>}
                   </span>
-                  <span className="report-date">{new Date(report.date).toLocaleDateString()}</span>
+                  {!isExportMode && (<span className="report-date">{new Date(report.date).toLocaleDateString()}</span>)}
                 </div>
                 <h3>{report.title}</h3>
                 <p className="report-preview">{report.content.substring(0, 100)}...</p>

@@ -126,7 +126,7 @@
 }
 
 .card-section {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.25);
   padding: 28px;
   border-radius: 16px;
   margin-bottom: 20px;
@@ -137,16 +137,7 @@
   backdrop-filter: blur(10px);
 }
 
-.card-section::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 16px 0 0 16px;
-}
+
 
 .card-section:hover {
   transform: translateY(-2px);
@@ -160,19 +151,18 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #1f2937;
+  color: white;
   padding-bottom: 12px;
-  border-bottom: 2px solid #e5e7eb;
 }
 
 .card-section h3 svg {
-  color: #6366f1;
+  color: white;
 }
 
 .card-section p {
   line-height: 1.8;
   font-size: 15px;
-  color: #4b5563;
+  color: white;
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -186,35 +176,22 @@
 
 .card-section li {
   padding: 12px 16px;
-  padding-left: 40px;
+  padding-left: 20px;
   position: relative;
   line-height: 1.7;
   font-size: 15px;
-  color: #4b5563;
+  color: white;
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
   transition: all 0.2s ease;
   margin-bottom: 8px;
-  background: #f9fafb;
+  background: transparent;
   border-radius: 8px;
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid #5355ed;
 }
 
-.card-section li:hover {
-  background: #f3f4f6;
-  border-left-color: #6366f1;
-  padding-left: 44px;
-}
 
-.card-section li::before {
-  content: "▸";
-  position: absolute;
-  left: 16px;
-  font-weight: bold;
-  font-size: 14px;
-  color: #6366f1;
-}
 
 .card-footer {
   text-align: center;
