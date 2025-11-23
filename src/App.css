@@ -1,0 +1,48 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  background: var(--bg-secondary);
+  padding: 32px 0;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  min-height: 500px;
+  padding: 32px;
+  border: 1px solid var(--border);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 24px 0;
+  }
+
+  .app-container {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-main {
+    padding: 20px 0;
+  }
+
+  .app-container {
+    padding: 20px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}

@@ -1,0 +1,56 @@
+.footer {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-version {
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 4px 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .footer-container {
+    padding: 20px 16px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 13px;
+  }
+}

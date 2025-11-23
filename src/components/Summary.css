@@ -1,0 +1,237 @@
+.summary {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.summary h2 {
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  font-size: 28px;
+  font-weight: 700;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%);
+  padding: 32px 24px;
+  border-radius: 16px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-card:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 1) 0%, rgba(139, 92, 246, 1) 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.stat-number {
+  font-size: 52px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-size: 15px;
+  opacity: 0.95;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.achievements-section {
+  background: var(--bg-secondary);
+  padding: 32px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+}
+
+.achievements-section h3 {
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: 700;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.achievements-list {
+  list-style: none;
+  padding: 0;
+}
+
+.achievements-list li {
+  padding: 16px 20px;
+  background: var(--bg-primary);
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border-left: 4px solid var(--primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  transition: all 0.2s ease;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.achievements-list li:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow);
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1024px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-container {
+  background: var(--bg-secondary);
+  padding: 24px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+}
+
+.chart-container h3 {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .summary h2 {
+    font-size: 24px;
+  }
+
+  .stat-card {
+    padding: 24px 16px;
+  }
+
+  .stat-number {
+    font-size: 40px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+  }
+
+  .chart-container {
+    padding: 20px;
+  }
+
+  .chart-container h3 {
+    font-size: 16px;
+  }
+
+  .achievements-section {
+    padding: 24px;
+  }
+
+  .achievements-section h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary h2 {
+    font-size: 20px;
+  }
+
+  .stat-card {
+    padding: 20px 12px;
+  }
+
+  .stat-number {
+    font-size: 32px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .chart-container {
+    padding: 16px;
+  }
+
+  .chart-container h3 {
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  .achievements-section {
+    padding: 20px;
+  }
+
+  .achievements-section h3 {
+    font-size: 18px;
+  }
+
+  .achievements-list li {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1024px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+}
