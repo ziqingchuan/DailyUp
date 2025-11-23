@@ -31,7 +31,7 @@ export const exportToJSON = (reports) => {
   const url = URL.createObjectURL(dataBlob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `WorkFlow_报告_${new Date().toLocaleDateString()}.json`
+  link.download = `DailyUp_报告_${new Date().toLocaleDateString()}.json`
   link.click()
   URL.revokeObjectURL(url)
 }
@@ -45,7 +45,7 @@ export const exportToMarkdown = (reports) => {
     terrible: '😢 很糟糕'
   }
 
-  let markdown = `# WorkFlow 工作报告\n\n`
+  let markdown = `# DailyUp 工作报告\n\n`
   markdown += `> 导出时间：${new Date().toLocaleString('zh-CN')}\n\n`
   markdown += `---\n\n`
 
