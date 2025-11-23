@@ -110,7 +110,7 @@ function ReportEditor({ report, onSave, onCancel }) {
         </div>
 
         <div className="form-group">
-          <label>收获与成果 ✨</label>
+          <label>收获与成果</label>
           {formData.achievements.map((achievement, index) => (
             <div key={index} className="array-item">
               <input
@@ -133,7 +133,7 @@ function ReportEditor({ report, onSave, onCancel }) {
         </div>
 
         <div className="form-group">
-          <label>明天/下周计划 📋</label>
+          <label>明天/下周计划</label>
           {formData.plans.map((plan, index) => (
             <div key={index} className="array-item">
               <input
