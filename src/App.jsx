@@ -6,7 +6,7 @@ import Summary from './components/Summary'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { getReports, createReport, updateReport, deleteReport as deleteReportService } from './services/reportService'
-import './App.css'
+import './styles/App.css'
 
 function App() {
   const [reports, setReports] = useState([])

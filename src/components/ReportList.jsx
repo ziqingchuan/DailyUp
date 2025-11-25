@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { exportToJSON, exportToMarkdown, importFromJSON } from '../utils/storage'
 import { SearchIcon, DownloadIcon, UploadIcon, EditIcon, TrashIcon, CardIcon, CalendarIcon, ChartIcon, CheckIcon } from './Icons'
 import CustomSelect from './CustomSelect'
-import './ReportList.css'
+import '../styles/ReportList.css'
 
 function ReportList({ reports, onEdit, onDelete, onViewCard, onImport }) {
   const [filter, setFilter] = useState('all')

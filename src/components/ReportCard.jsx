@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import html2canvas from 'html2canvas'
 import { ArrowLeftIcon, DownloadIcon, CalendarIcon, ChartIcon, FileTextIcon, SparklesIcon, ChecklistIcon, AlertIcon } from './Icons'
-import './ReportCard.css'
+import '../styles/ReportCard.css'
 
 function ReportCard({ report, onBack }) {
   const cardRef = useRef(null)

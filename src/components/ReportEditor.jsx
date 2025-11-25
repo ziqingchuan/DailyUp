@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { PlusIcon, CloseIcon, CalendarIcon, ChartIcon } from './Icons'
 import CustomSelect from './CustomSelect'
-import './ReportEditor.css'
+import '../styles/ReportEditor.css'
 
 function ReportEditor({ report, onSave, onCancel }) {
   const [formData, setFormData] = useState({

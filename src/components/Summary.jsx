@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, format, eachDayOfInterval, subDays } from 'date-fns'
 import ReactECharts from 'echarts-for-react'
-import './Summary.css'
+import '../styles/Summary.css'
 
 function Summary({ reports }) {
   const stats = useMemo(() => {

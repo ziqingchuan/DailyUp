@@ -1,5 +1,5 @@
 import { FileTextIcon, PlusIcon, ChartIcon } from './Icons'
-import './Header.css'
+import '../styles/Header.css'
 
 function Header({ currentView, onNavigate }) {
   return (
