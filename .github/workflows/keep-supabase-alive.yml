@@ -24,6 +24,14 @@ jobs:
         VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
         VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       run: |
+        # 创建 package.json 以支持 ES 模块
+        cat > package.json << 'EOF'
+        {
+          "type": "module"
+        }
+        EOF
+        
+        # 创建保活脚本
         cat > keep-alive.js << 'EOF'
         import { createClient } from '@supabase/supabase-js'
 
@@ -62,4 +70,5 @@ jobs:
         keepAlive()
         EOF
         
+        # 执行脚本
         node keep-alive.js
