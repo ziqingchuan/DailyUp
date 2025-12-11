@@ -1,0 +1,65 @@
+name: Keep Supabase Database Alive
+
+on:
+  schedule:
+    # 每天北京时间上午10点执行 (UTC 02:00)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Supabase client
+      run: npm install @supabase/supabase-js
+      
+    - name: Keep Supabase alive
+      env:
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      run: |
+        cat > keep-alive.js << 'EOF'
+        import { createClient } from '@supabase/supabase-js'
+
+        const supabaseUrl = process.env.VITE_SUPABASE_URL
+        const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+          console.error('❌ 缺少 Supabase 环境变量')
+          process.exit(1)
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+        async function keepAlive() {
+          try {
+            console.log('🔄 开始执行 Supabase 保活任务...')
+            
+            const { data, error, count } = await supabase
+              .from('reports')
+              .select('*', { count: 'exact', head: true })
+            
+            if (error) {
+              console.error('❌ 查询失败:', error.message)
+              process.exit(1)
+            }
+            
+            console.log(`✅ Supabase 保活成功! 当前 reports 表有 ${count} 条记录`)
+            console.log(`⏰ 执行时间: ${new Date().toISOString()}`)
+            
+          } catch (error) {
+            console.error('❌ 保活任务执行失败:', error.message)
+            process.exit(1)
+          }
+        }
+
+        keepAlive()
+        EOF
+        
+        node keep-alive.js
