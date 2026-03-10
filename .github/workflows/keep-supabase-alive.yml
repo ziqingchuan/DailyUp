@@ -9,8 +9,13 @@ on:
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 授予修改仓库内容的权限（用于自动提交）
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 # 拉取仓库代码（用于后续提交）
+    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -31,7 +36,7 @@ jobs:
         }
         EOF
         
-        # 创建保活脚本
+        # 创建保活脚本（优化了错误处理和日志）
         cat > keep-alive.js << 'EOF'
         import { createClient } from '@supabase/supabase-js'
 
@@ -49,20 +54,21 @@ jobs:
           try {
             console.log('🔄 开始执行 Supabase 保活任务...')
             
-            const { data, error, count } = await supabase
+            // 执行一个轻量查询（head: true 只返回计数，不返回数据，更高效）
+            const { error, count } = await supabase
               .from('reports')
-              .select('*', { count: 'exact', head: true })
+              .select('id', { count: 'exact', head: true }) // 只查id字段，更轻量
             
             if (error) {
-              console.error('❌ 查询失败:', error.message)
+              console.error('❌ Supabase 查询失败:', error.message)
               process.exit(1)
             }
             
-            console.log(`✅ Supabase 保活成功! 当前 reports 表有 ${count} 条记录`)
-            console.log(`⏰ 执行时间: ${new Date().toISOString()}`)
+            console.log(`✅ Supabase 保活成功! 当前 reports 表有 ${count || 0} 条记录`)
+            console.log(`⏰ 执行时间: ${new Date().toLocaleString('zh-CN')}`)
             
           } catch (error) {
-            console.error('❌ 保活任务执行失败:', error.message)
+            console.error('❌ 保活任务执行失败:', error.stack || error.message)
             process.exit(1)
           }
         }
@@ -72,3 +78,16 @@ jobs:
         
         # 执行脚本
         node keep-alive.js
+    
+    # 关键：自动提交一个空文件，保持仓库活跃，防止 GitHub 暂停定时任务
+    - name: Keep repository active
+      run: |
+        # 创建/更新一个空文件，记录最后执行时间
+        echo "Last keep-alive run: $(date -u)" > .supabase-keep-alive.txt
+        
+        # 提交并推送（仅当文件有变化时）
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .supabase-keep-alive.txt
+        git diff --quiet && git diff --staged --quiet || git commit -m "chore: update supabase keep-alive timestamp [skip ci]"
+        git push
