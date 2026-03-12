@@ -6,6 +6,10 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch: # 允许手动触发
 
+# 全局环境变量：强制所有 Action 使用 Node.js 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
@@ -14,12 +18,12 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v6 # 拉取仓库代码（用于后续提交）
+      uses: actions/checkout@v6 # 升级到 v6，支持 Node.js 24
       with:
         token: ${{ secrets.GITHUB_TOKEN }} # 核心修复：添加 GitHub 自动生成的认证 Token
     
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5 # 升级到 v5，彻底消除 Node.js 20 弃用警告
       with:
         node-version: '18'
         
