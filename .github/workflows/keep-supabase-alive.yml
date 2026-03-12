@@ -14,7 +14,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4 # 拉取仓库代码（用于后续提交）
+      uses: actions/checkout@v6 # 拉取仓库代码（用于后续提交）
       with:
         token: ${{ secrets.GITHUB_TOKEN }} # 核心修复：添加 GitHub 自动生成的认证 Token
     
