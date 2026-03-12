@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4 # 拉取仓库代码（用于后续提交）
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} # 核心修复：添加 GitHub 自动生成的认证 Token
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -39,17 +41,13 @@ jobs:
         # 创建保活脚本（优化了错误处理和日志）
         cat > keep-alive.js << 'EOF'
         import { createClient } from '@supabase/supabase-js'
-
         const supabaseUrl = process.env.VITE_SUPABASE_URL
         const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
-
         if (!supabaseUrl || !supabaseAnonKey) {
           console.error('❌ 缺少 Supabase 环境变量')
           process.exit(1)
         }
-
         const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
         async function keepAlive() {
           try {
             console.log('🔄 开始执行 Supabase 保活任务...')
@@ -72,7 +70,6 @@ jobs:
             process.exit(1)
           }
         }
-
         keepAlive()
         EOF
         
