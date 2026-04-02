@@ -2,93 +2,70 @@ name: Keep Supabase Database Alive
 
 on:
   schedule:
-    # 每天北京时间上午10点执行 (UTC 02:00)
-    - cron: '0 2 * * *'
-  workflow_dispatch: # 允许手动触发
-
-# 全局环境变量：强制所有 Action 使用 Node.js 24
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    - cron: '0 2 * * *'  # 每天 UTC 2点，北京时间 10点
+  workflow_dispatch:     # 允许手动触发
 
 jobs:
-  keep-alive:
+  keep-supabase-alive:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 授予修改仓库内容的权限（用于自动提交）
-    
+      contents: write
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6 # 升级到 v6，支持 Node.js 24
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }} # 核心修复：添加 GitHub 自动生成的认证 Token
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v5 # 升级到 v5，彻底消除 Node.js 20 弃用警告
-      with:
-        node-version: '18'
-        
-    - name: Install Supabase client
-      run: npm install @supabase/supabase-js
-      
-    - name: Keep Supabase alive
-      env:
-        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-      run: |
-        # 创建 package.json 以支持 ES 模块
-        cat > package.json << 'EOF'
-        {
-          "type": "module"
-        }
-        EOF
-        
-        # 创建保活脚本（优化了错误处理和日志）
-        cat > keep-alive.js << 'EOF'
-        import { createClient } from '@supabase/supabase-js'
-        const supabaseUrl = process.env.VITE_SUPABASE_URL
-        const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
-        if (!supabaseUrl || !supabaseAnonKey) {
-          console.error('❌ 缺少 Supabase 环境变量')
-          process.exit(1)
-        }
-        const supabase = createClient(supabaseUrl, supabaseAnonKey)
-        async function keepAlive() {
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - name: Install Supabase JS
+        run: npm install @supabase/supabase-js
+
+      - name: Insert keepalive record
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          cat > package.json << EOF
+          { "type": "module" }
+          EOF
+
+          cat > keepalive.js << EOF
+          import { createClient } from '@supabase/supabase-js'
+
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY
+          )
+
           try {
-            console.log('🔄 开始执行 Supabase 保活任务...')
-            
-            // 执行一个轻量查询（head: true 只返回计数，不返回数据，更高效）
-            const { error, count } = await supabase
-              .from('reports')
-              .select('id', { count: 'exact', head: true }) // 只查id字段，更轻量
-            
-            if (error) {
-              console.error('❌ Supabase 查询失败:', error.message)
-              process.exit(1)
-            }
-            
-            console.log(`✅ Supabase 保活成功! 当前 reports 表有 ${count || 0} 条记录`)
-            console.log(`⏰ 执行时间: ${new Date().toLocaleString('zh-CN')}`)
-            
-          } catch (error) {
-            console.error('❌ 保活任务执行失败:', error.stack || error.message)
+            // 每天往保活表插入一条数据（真正激活数据库）
+            const { error } = await supabase
+              .from('database_keepalive')
+              .insert([{}])
+
+            if (error) throw error
+
+            console.log('✅ Supabase 保活成功：已插入一条记录')
+            console.log('⏰ 执行时间：' + new Date().toLocaleString('zh-CN'))
+          } catch (err) {
+            console.error('❌ 保活失败：', err)
             process.exit(1)
           }
-        }
-        keepAlive()
-        EOF
-        
-        # 执行脚本
-        node keep-alive.js
-    
-    # 关键：自动提交一个空文件，保持仓库活跃，防止 GitHub 暂停定时任务
-    - name: Keep repository active
-      run: |
-        # 创建/更新一个空文件，记录最后执行时间
-        echo "Last keep-alive run: $(date -u)" > .supabase-keep-alive.txt
-        
-        # 提交并推送（仅当文件有变化时）
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add .supabase-keep-alive.txt
-        git diff --quiet && git diff --staged --quiet || git commit -m "chore: update supabase keep-alive timestamp [skip ci]"
-        git push
+          EOF
+
+          node keepalive.js
+
+      # 保持 GitHub Action 不被冻结（自动更新时间戳文件）
+      - name: Update GitHub activity
+        run: |
+          date -u > .last_keepalive.txt
+          git config --global user.name "Actions"
+          git config --global user.email "actions@github.com"
+          git add .last_keepalive.txt
+          git diff --quiet || git commit -m "chore: update keepalive timestamp [skip ci]"
+          git push
