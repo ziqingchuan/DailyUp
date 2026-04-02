@@ -21,16 +21,14 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
 
-    # 修复报错核心：拉取最新代码
-    - name: Pull latest changes
+    - name: Pull latest code
       run: git pull --rebase origin main
 
     - name: Setup Node.js
       uses: actions/setup-node@v5
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install Supabase client
       run: npm install @supabase/supabase-js
@@ -62,7 +60,6 @@ jobs:
           try {
             console.log('🔄 开始执行 Supabase 保活任务...')
             
-            # 轻量级查询，保证数据库激活
             const { error, count } = await supabase
               .from('reports')
               .select('id', { count: 'exact', head: true })
@@ -85,7 +82,6 @@ jobs:
 
         node keep-alive.js
 
-    # 更新时间戳并提交（已修复冲突）
     - name: Keep repository active
       run: |
         echo "Last keep-alive run: $(date -u)" > .supabase-keep-alive.txt
