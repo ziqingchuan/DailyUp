@@ -5,9 +5,6 @@ on:
     - cron: '0 2 * * *'  # 每天 UTC 2点 / 北京时间 10点
   workflow_dispatch:     # 允许手动触发
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
@@ -28,8 +25,9 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install Supabase client
-      run: npm install @supabase/supabase-js
+    # 关键修复：同时安装 supabase-js 和 ws
+    - name: Install dependencies
+      run: npm install @supabase/supabase-js ws
 
     - name: Insert keepalive record to Supabase
       env:
@@ -41,9 +39,9 @@ jobs:
           "type": "module"
         }
         EOF
-
         cat > keep-alive.js << 'EOF'
         import { createClient } from '@supabase/supabase-js'
+        import ws from 'ws'  // 关键修复：引入 ws
 
         const supabaseUrl = process.env.VITE_SUPABASE_URL
         const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
@@ -53,19 +51,20 @@ jobs:
           process.exit(1)
         }
 
-        const supabase = createClient(supabaseUrl, supabaseAnonKey)
+        // 关键修复：添加 transport: ws
+        const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+          realtime: { transport: ws }
+        })
 
         async function run() {
           try {
             console.log('🔄 正在向保活表插入一条记录...')
             
-            // 向专用表插入数据（真正保活）
             const { error } = await supabase
               .from('database_keepalive')
               .insert([{}])
 
             if (error) throw error
-
             console.log('✅ Supabase 保活成功：已插入记录')
             console.log('⏰ 执行时间：' + new Date().toLocaleString('zh-CN'))
           } catch (err) {
@@ -76,7 +75,6 @@ jobs:
 
         run()
         EOF
-
         node keep-alive.js
 
     - name: Update timestamp to keep repo active
